@@ -1,0 +1,4 @@
+eQuery
+======
+
+personal jQuery library
