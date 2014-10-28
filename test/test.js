@@ -33,6 +33,9 @@ QUnit.test('Utilities (Functional programming)', function(assert) {
     };
     var eachArray = 0;
     var eachObject = {};
+    var proxyFn = function () {
+        return this.two + this.four;
+    };
 
     $.each(array, function(index, value) {
         eachArray += value;
@@ -51,8 +54,21 @@ QUnit.test('Utilities (Functional programming)', function(assert) {
     assert.ok($.isArray(array) && !$.isArray(object), '$.isArray() works as expected');
     assert.ok($.isFunction(function(){}) && !$.isFunction(object), '$.isFunction() works as expected');
     assert.ok($.isNumeric(1) && $.isNumeric('1') && $.isNumeric('1.25') && !$.isNumeric(object), '$.isNumeric() works as expected');
+
+    var proxyTestFn = $.proxy(proxyFn, object);
+    assert.equal(typeof proxyTestFn, 'function', '$.proxy(function, context) generates a function');
+    assert.equal(proxyTestFn(), 6, '$.proxy(function, context) generated function uses the correct context');
+
+    // Watch out for objects references when copying!
+    var extendedObj = $.extend(object, {six: 'six'});
+    assert.equal(extendedObj.six, 'six', '$.extend() works as expected.');    
 });
 
 QUnit.test('Events', function(assert) {
-    assert.ok(true, '$().click()');
+
+    $('#container').click(function (e) {
+        assert.equal(this.id, e.target.id, '$().click() listen and trigger as expected');
+    });
+
+    $('#container').click();
 });
