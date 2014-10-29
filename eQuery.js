@@ -64,11 +64,16 @@
 		return this.el.outerHTML;
 	};
 
-	eQuery.prototype.click = function(callback) {
-		if(document.addEventListener) {
-			this.el.addEventListener("click", callback);
+	eQuery.prototype.click = function(fn) {
+		if(fn) {
+			if (this.el.addEventListener) {
+			  return this.el.addEventListener('click',fn); 
+			} else {
+			  return this.el.attachEvent('onclick', fn);
+			}
 		} else {
-			this.el.attachEvent("onclick", callback);
+			var event = new MouseEvent("click");
+			return this.el.dispatchEvent(event);
 		}
 	};
 
